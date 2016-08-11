@@ -290,6 +290,7 @@ def acquire_distributed_beat_lock(sender=None, **kwargs):
     logger.debug('beat: Acquiring lock...')
 
     lock = redis(scheduler.app).lock(scheduler.lock_key, timeout=scheduler.lock_timeout,
-                                     sleep=scheduler.max_interval, thread_local=False)
+                                     sleep=scheduler.max_interval)
     lock.acquire()
+    logger.debug('beat: Acquired lock: %s', lock.name)
     scheduler.lock = lock
