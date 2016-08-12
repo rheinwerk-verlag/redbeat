@@ -20,6 +20,7 @@ from celery.utils.timeutils import humanize_seconds
 from celery.app import app_or_default
 
 from redis.client import StrictRedis
+from redis.lock import Lock as RedisLock
 
 from .decoder import RedBeatJSONEncoder, RedBeatJSONDecoder
 
@@ -290,7 +291,7 @@ def acquire_distributed_beat_lock(sender=None, **kwargs):
     logger.debug('beat: Acquiring lock...')
 
     lock = redis(scheduler.app).lock(scheduler.lock_key, timeout=scheduler.lock_timeout,
-                                     sleep=scheduler.max_interval)
+                                     sleep=scheduler.max_interval, lock_class=RedisLock)
     lock.acquire()
     logger.debug('beat: Acquired lock: %s', lock.name)
     scheduler.lock = lock
