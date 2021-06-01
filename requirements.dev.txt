@@ -1,4 +1,4 @@
-celery
+celery<4
 fakeredis>=1.0.3
 mock
 nose
@@ -8,5 +8,3 @@ pytest-cov
 python-dateutil
 redis
 tenacity
-tox
-twine
