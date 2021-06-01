@@ -1,5 +1,10 @@
-0.13.0 (2019-03-08)
---------------------
+0.13.0+rheinwerk1 (2021-06-01)
+------------------------------
+  - Support timezones other than UTC thanks @luoxiaohei, @sempr and @noamkush
+  - Use a custom lock extension script to ensure that only one beat instance can hold the lock
+
+0.13.0 (2019-04-16)
+-------------------
   - support py-redis>=3. thanks noamkush
     - see https://github.com/sibson/redbeat/pull/108 for dependency issues
   - use CircleCI 2.0, thanks Christopher Dignam
@@ -7,30 +12,29 @@
   - test fixes for py37/celery3/4, thanks @laixintao
 
 0.12.0 (2018-12-06)
---------------------
+-------------------
   - better Celery 4 support, thanks @az-wegift
   - configurably, automatically reconnect to Redis on timeout error rather than terminate, thanks @az-wegift
   - password support for Redis Sentinal connections, thanks @az-wegift
   - bugfix, rrule serialization under Celery 3, thanks @noamkush
 
 0.11.1 (2018-01-03)
---------------------
+-------------------
  - config options and password support for Redis Sentinel, thanks Amadeusz Zolnowski
 
 0.11.0 (2017-10-18)
----------------------
+-------------------
  - SECURITY, redact password when logging redis URL
  - Celery 3/4 compatibility fixes, thanks Jannis Leidel
  - Recurrance Rule support, thanks Aric Huang
  - Redis Cluster support, thanks Arthur Lutz
 
-
 0.10.2 (2017-10-10)
-----------------------
+-------------------
  - SECURITY, redact password when logging redis URL
 
 0.10.0 (2017-05-10)
-----------------------
+-------------------
  - minor breaking changes due to reworked API
  - celery 4.x support
  - python 3 compatability, thanks Christopher Arndt
