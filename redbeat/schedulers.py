@@ -471,7 +471,13 @@ class RedBeatScheduler(Scheduler):
     def tick(self, min=min, **kwargs):
         if self.lock:
             logger.debug('beat: Extending lock...')
-            self.lock.extend(int(self.lock_timeout))
+            try:
+                self.lock.extend(int(self.lock_timeout))
+            except redis.exceptions.LockError:
+                # Lock may no longer be owned due to a suspended process, connection issues, etc.
+                self.lock.token = None
+                logger.debug('beat: Lock no longer owned, re-acquiring...')
+                self.lock.acquire()
 
         remaining_times = []
         try:
@@ -486,8 +492,9 @@ class RedBeatScheduler(Scheduler):
 
     def close(self):
         if self.lock:
-            logger.debug('beat: Releasing Lock')
-            self.lock.release()
+            if self.lock.token:
+                logger.debug('beat: Releasing Lock')
+                self.lock.release()
             self.lock = None
         super(RedBeatScheduler, self).close()
 
