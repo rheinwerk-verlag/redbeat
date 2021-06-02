@@ -16,10 +16,14 @@ try:  # celery 3.x
 except ImportError:  # celery 4.x
     import celery.contrib.testing.app
 
+import pytest
 from mock import (
     patch,
     Mock
 )
+from redis.exceptions import LockError
+from redis.lock import LuaLock
+
 from basecase import RedBeatCase, AppCase
 from redbeat import RedBeatScheduler
 from redbeat.schedulers import get_redis
@@ -195,6 +199,35 @@ class test_RedBeatScheduler_tick(RedBeatSchedulerTestBase):
 
     def test_lock_timeout(self):
         self.assertEqual(self.s.lock_timeout, self.s.max_interval * 5)
+
+    def test_lock_reacquisition(self):
+        self.s.lock = Mock(spec=LuaLock)
+        self.s.lock.token = '11c6918fc37811eba324309c23a8804c'
+        self.s.lock.extend.side_effect = LockError
+
+        self.s.tick()
+        self.s.lock.extend.assert_called_once_with(self.s.lock_timeout)
+        assert self.s.lock.token is None
+        self.s.lock.acquire.assert_called_once_with()
+
+
+class test_RedBeatScheduler_close(RedBeatSchedulerTestBase):
+
+    def test_release_owned_lock(self):
+        lock = self.s.lock = Mock(spec=LuaLock)
+        self.s.lock.token = '11c6918fc37811eba324309c23a8804c'
+
+        self.s.close()
+        lock.release.assert_called_once_with()
+        assert self.s.lock is None
+
+    def test_non_owned_lock(self):
+        lock = self.s.lock = Mock(spec=LuaLock)
+        self.s.lock.token = None
+
+        self.s.close()
+        lock.release.assert_not_called()
+        assert self.s.lock is None
 
 
 class NotSentinelRedBeatCase(AppCase):
