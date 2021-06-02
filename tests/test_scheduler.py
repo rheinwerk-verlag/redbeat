@@ -22,7 +22,7 @@ from mock import (
     Mock
 )
 from redis.exceptions import LockError
-from redis.lock import LuaLock
+from redis.lock import Lock
 
 from basecase import RedBeatCase, AppCase
 from redbeat import RedBeatScheduler
@@ -201,7 +201,7 @@ class test_RedBeatScheduler_tick(RedBeatSchedulerTestBase):
         self.assertEqual(self.s.lock_timeout, self.s.max_interval * 5)
 
     def test_lock_reacquisition(self):
-        self.s.lock = Mock(spec=LuaLock)
+        self.s.lock = Mock(spec=Lock)
         self.s.lock.token = '11c6918fc37811eba324309c23a8804c'
         self.s.lock.extend.side_effect = LockError
 
@@ -214,7 +214,7 @@ class test_RedBeatScheduler_tick(RedBeatSchedulerTestBase):
 class test_RedBeatScheduler_close(RedBeatSchedulerTestBase):
 
     def test_release_owned_lock(self):
-        lock = self.s.lock = Mock(spec=LuaLock)
+        lock = self.s.lock = Mock(spec=Lock)
         self.s.lock.token = '11c6918fc37811eba324309c23a8804c'
 
         self.s.close()
@@ -222,7 +222,7 @@ class test_RedBeatScheduler_close(RedBeatSchedulerTestBase):
         assert self.s.lock is None
 
     def test_non_owned_lock(self):
-        lock = self.s.lock = Mock(spec=LuaLock)
+        lock = self.s.lock = Mock(spec=Lock)
         self.s.lock.token = None
 
         self.s.close()

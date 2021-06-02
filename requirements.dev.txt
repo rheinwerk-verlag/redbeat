@@ -6,5 +6,5 @@ pytest
 pytest-catchlog
 pytest-cov
 python-dateutil
-redis<3
+redis
 tenacity
