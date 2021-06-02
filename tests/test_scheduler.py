@@ -215,7 +215,6 @@ class test_RedBeatScheduler_close(RedBeatSchedulerTestBase):
 
     def test_release_owned_lock(self):
         lock = self.s.lock = Mock(spec=Lock)
-        self.s.lock.token = '11c6918fc37811eba324309c23a8804c'
 
         self.s.close()
         lock.release.assert_called_once_with()
@@ -223,10 +222,10 @@ class test_RedBeatScheduler_close(RedBeatSchedulerTestBase):
 
     def test_non_owned_lock(self):
         lock = self.s.lock = Mock(spec=Lock)
-        self.s.lock.token = None
+        lock.release.side_effect = LockError
 
-        self.s.close()
-        lock.release.assert_not_called()
+        self.s.close()  # Should not raise an exception
+        lock.release.assert_called_once_with()
         assert self.s.lock is None
 
 
