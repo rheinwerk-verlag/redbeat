@@ -476,7 +476,7 @@ class RedBeatScheduler(Scheduler):
             except redis.exceptions.LockError:
                 # Lock may no longer be owned due to a suspended process, connection issues, etc.
                 self.lock.token = None
-                logger.debug('beat: Lock no longer owned, re-acquiring...')
+                logger.debug('beat: Lock no longer owned, reacquiring...')
                 self.lock.acquire()
 
         remaining_times = []
