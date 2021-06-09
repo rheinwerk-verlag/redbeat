@@ -59,7 +59,3 @@ Redbeat use a lock in redis to prevent multiple node running.
 You can safely start multiple nodes as backup, when the running node fails or
 experience network problems, after ``redbeat_lock_timeout`` seconds,
 another node will acquire the lock and start running.
-
-When the previous node back online, it will notice that itself no longer holds
-the lock and exit with an Exception(Would be better if you use systemd or supervisord
-to restart it as a backup node).
