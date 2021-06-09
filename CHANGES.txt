@@ -1,4 +1,4 @@
-0.13.0+rheinwerk1 (2021-06-01)
+0.13.0+rheinwerk1 (2021-06-09)
 ------------------------------
   - Support timezones other than UTC thanks @luoxiaohei, @sempr and @noamkush
   - Use a custom lock extension script to ensure that only one beat instance can hold the lock
